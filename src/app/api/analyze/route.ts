@@ -19,9 +19,9 @@ function checkRateLimit(ip: string): boolean {
 }
 
 async function extractTextFromPDF(buffer: ArrayBuffer): Promise<string> {
-  // Dynamic import for pdf-parse
-  const pdfParse = (await import("pdf-parse")) as any
-  const data = await (pdfParse.default || pdfParse)(Buffer.from(buffer))
+  // pdf-parse v1 requires a direct require to work properly
+  const pdfParse = require("pdf-parse") // eslint-disable-line
+  const data = await pdfParse(Buffer.from(buffer))
   return data.text
 }
 

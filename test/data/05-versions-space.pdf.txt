@@ -1,0 +1,60 @@
+
+
+AcmeTech
+AI-Powered Supply Chain Optimization
+
+Problem
+Supply chains waste $2.3T annually due to inefficiency.
+60% of companies still use spreadsheets.
+No real-time visibility across tiers.
+
+Solution
+AcmeTech uses AI to predict disruptions 30 days ahead.
+Real-time dashboard across all supply chain tiers.
+Automated reorder and rerouting.
+
+Market Size
+TAM: $45B global supply chain software
+SAM: $12B mid-market manufacturers
+SOM: $800M in Year 5
+
+Business Model
+SaaS subscription: $2K-$20K/month per customer.
+Avg contract value: $8K/month.
+90% gross margins. Net revenue retention: 130%.
+
+Traction
+50 paying customers, $2.4M ARR.
+Growing 15% MoM. 95% retention.
+Customers: Boeing, Toyota, 3M.
+
+Team
+CEO: Jane Smith - Ex-Amazon Supply Chain VP (15 yrs)
+CTO: Bob Lee - MIT PhD, ex-Google ML lead
+COO: Maria Garcia - McKinsey Partner
+
+Competition
+Blue Yonder: Legacy, slow. SAP: Expensive, complex.
+We win on speed-to-value (2 weeks vs 6 months)
+and AI accuracy (94% vs industry 70%).
+
+Go-to-Market
+Direct sales to mid-market ($50M-$1B revenue).
+Channel partnerships with Deloitte and Accenture.
+Content marketing driving 40% of pipeline.
+
+Financials
+2024: $2.4M ARR
+2025: $8M ARR (projected)
+2026: $24M ARR
+Path to profitability: Q3 2026
+
+The Ask
+Raising $10M Series A
+18 months runway
+Use of funds: 50% Engineering, 30% Sales, 20% Ops
+Target: 200 customers, $8M ARR by EOY
+
+Thank You
+jane@acmetech.ai
+www.acmetech.ai
