@@ -1,25 +1,11 @@
 import { NextRequest, NextResponse } from "next/server"
 import OpenAI from "openai"
+import { auth } from "@/lib/auth"
+import { hasActiveSubscription, checkAndIncrementUsage } from "@/lib/subscription"
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
 
-// Simple in-memory rate limiting
-const rateLimit = new Map<string, { count: number; resetAt: number }>()
-
-function checkRateLimit(ip: string): boolean {
-  const now = Date.now()
-  const entry = rateLimit.get(ip)
-  if (!entry || now > entry.resetAt) {
-    rateLimit.set(ip, { count: 1, resetAt: now + 86400000 }) // 24h
-    return true
-  }
-  if (entry.count >= 3) return false // 3 per day for free tier
-  entry.count++
-  return true
-}
-
 async function extractTextFromPDF(buffer: ArrayBuffer): Promise<string> {
-  // pdf-parse v1 requires a direct require to work properly
   const pdfParse = require("pdf-parse") // eslint-disable-line
   const data = await pdfParse(Buffer.from(buffer))
   return data.text
@@ -64,16 +50,32 @@ Return ONLY valid JSON in this exact format:
 Be honest but constructive. Score fairly — most decks should land between 4-8. Only exceptional decks get 9+. Be specific with feedback, not generic.`
 
 export async function POST(req: NextRequest) {
-  try {
-    // Rate limit check
-    const ip = req.headers.get("x-forwarded-for") || req.headers.get("x-real-ip") || "unknown"
-    if (!checkRateLimit(ip)) {
-      return NextResponse.json(
-        { error: "Daily limit reached. Upgrade to Pro for unlimited analyses." },
-        { status: 429 }
-      )
-    }
+  // Auth check
+  const session = await auth.api.getSession({ headers: req.headers })
+  if (!session?.user) {
+    return NextResponse.json(
+      { error: "Please sign in to analyze pitch decks." },
+      { status: 401 }
+    )
+  }
 
+  // Subscription check
+  if (!hasActiveSubscription(session.user.id)) {
+    return NextResponse.json(
+      { error: "Active subscription required. Subscribe at /pricing to continue." },
+      { status: 403 }
+    )
+  }
+
+  // Rate limit: 50 per month
+  if (!checkAndIncrementUsage(session.user.id, 50)) {
+    return NextResponse.json(
+      { error: "Monthly analysis limit reached (50/month). Resets next month." },
+      { status: 429 }
+    )
+  }
+
+  try {
     const formData = await req.formData()
     const file = formData.get("file") as File
     if (!file) {
@@ -84,7 +86,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Please upload a PDF file" }, { status: 400 })
     }
 
-    // Extract text
     const buffer = await file.arrayBuffer()
     let text: string
     try {
@@ -100,10 +101,8 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    // Truncate to avoid token limits
     const truncatedText = text.slice(0, 15000)
 
-    // Analyze with AI
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [
@@ -124,10 +123,10 @@ export async function POST(req: NextRequest) {
     result.letterGrade = getLetterGrade(result.overallScore)
 
     return NextResponse.json(result)
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Analysis error:", error)
     return NextResponse.json(
-      { error: error.message || "Analysis failed. Please try again." },
+      { error: "Analysis failed. Please try again." },
       { status: 500 }
     )
   }
