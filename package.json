@@ -9,10 +9,11 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@libsql/client": "^0.17.0",
     "better-auth": "^1.4.18",
-    "better-sqlite3": "^12.6.2",
     "clsx": "^2.1.1",
     "framer-motion": "^12.33.0",
+    "kysely-libsql": "^0.7.1",
     "lucide-react": "^0.563.0",
     "next": "14.2.35",
     "openai": "^6.18.0",
@@ -23,7 +24,6 @@
     "tailwind-merge": "^3.4.0"
   },
   "devDependencies": {
-    "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

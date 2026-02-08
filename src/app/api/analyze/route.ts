@@ -60,7 +60,7 @@ export async function POST(req: NextRequest) {
   }
 
   // Subscription check
-  if (!hasActiveSubscription(session.user.id)) {
+  if (!(await hasActiveSubscription(session.user.id))) {
     return NextResponse.json(
       { error: "Active subscription required. Subscribe at /pricing to continue." },
       { status: 403 }
@@ -68,7 +68,7 @@ export async function POST(req: NextRequest) {
   }
 
   // Rate limit: 50 per month
-  if (!checkAndIncrementUsage(session.user.id, 50)) {
+  if (!(await checkAndIncrementUsage(session.user.id, 50))) {
     return NextResponse.json(
       { error: "Monthly analysis limit reached (50/month). Resets next month." },
       { status: 429 }

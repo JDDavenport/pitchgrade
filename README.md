@@ -1,36 +1,58 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# PitchGrade
 
-## Getting Started
+AI-powered pitch deck analyzer. Upload a PDF pitch deck, get scored on 12 VC criteria with detailed feedback.
 
-First, run the development server:
+## Tech Stack
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **Framework:** Next.js 14 (App Router)
+- **Auth:** Better Auth (email/password + Google OAuth)
+- **Database:** Turso (libSQL) — works on Vercel serverless
+- **Payments:** Stripe (subscriptions)
+- **AI:** OpenAI GPT-4o-mini
+
+## Setup
+
+1. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+2. **Set up Turso database:**
+   ```bash
+   # Install Turso CLI
+   curl -sSfL https://get.tur.so/install.sh | bash
+
+   # Run setup script
+   ./turso-setup.sh
+   ```
+
+3. **Configure environment:**
+   ```bash
+   cp .env.example .env
+   # Fill in TURSO_DATABASE_URL, TURSO_AUTH_TOKEN, and other values
+   ```
+
+4. **Run Better Auth migration:**
+   ```bash
+   npx @better-auth/cli migrate
+   ```
+
+5. **Start dev server:**
+   ```bash
+   npm run dev
+   ```
+
+### Local Development (without Turso)
+
+For local dev, you can use a local SQLite file:
 ```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+TURSO_DATABASE_URL=file:./auth.db
+TURSO_AUTH_TOKEN=
+```
 
 ## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Run `turso-setup.sh` to create your Turso database
+2. Add `TURSO_DATABASE_URL` and `TURSO_AUTH_TOKEN` to Vercel environment variables
+3. Add all other env vars (Stripe, OpenAI, Google OAuth, Better Auth)
+4. Deploy via `vercel` or Git push

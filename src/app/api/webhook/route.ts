@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
         );
         // Get period end from first subscription item
         const periodEnd = subscription.items.data[0]?.current_period_end ?? Math.floor(Date.now() / 1000) + 30 * 86400;
-        upsertSubscription({
+        await upsertSubscription({
           userId,
           stripeCustomerId: session.customer as string,
           stripeSubscriptionId: subscription.id,
@@ -48,10 +48,10 @@ export async function POST(req: NextRequest) {
     case "customer.subscription.deleted": {
       const subscription = event.data.object as Stripe.Subscription;
       const customerId = subscription.customer as string;
-      const existing = getUserByStripeCustomer(customerId);
+      const existing = await getUserByStripeCustomer(customerId);
       if (existing) {
         const periodEnd = subscription.items.data[0]?.current_period_end ?? Math.floor(Date.now() / 1000);
-        upsertSubscription({
+        await upsertSubscription({
           userId: existing.userId,
           stripeCustomerId: customerId,
           stripeSubscriptionId: subscription.id,
